@@ -59,14 +59,14 @@ impl Sphere {
                     let longs = longs as u16;
 
                     indices.append( &mut vec![
-                        long,
                         long + lat * longs,
-                        long + 1
+                        (long + 1) + lat * longs,
+                        long + (lat + 1) * longs
                     ]);
                     indices.append( &mut vec![
-                        long + 1,
-                        long + (lat * longs) + 1,
-                        long + lat * longs
+                        (long + 1) + lat * longs,
+                        (long + 1) + (lat + 1) * longs,
+                        long + (lat + 1) * longs
                     ]);
                 }
             }
