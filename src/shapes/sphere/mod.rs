@@ -2,6 +2,7 @@
 
 use glium::{Display, Surface, VertexBuffer};
 use glium::IndexBuffer;
+use glium::texture::*;
 
 use crate::shapes::{Drawable, Transform, Vertex};
 
@@ -50,13 +51,15 @@ impl Sphere {
                 let x = h * φ.sin();
                 let z = h * φ.cos();
 
+
                 vertices.push(Vertex::new(x, y, z));
 
                 // Make indices list
                 if lat != lats - 1 && long != longs - 1 {
+
                     let long = long as u16;
-                    let lat = lat as u16;
                     let longs = longs as u16;
+                    let lat = lat as u16;
 
                     indices.append( &mut vec![
                         long + lat * longs,
@@ -103,13 +106,14 @@ impl Sphere {
 
 impl Drawable for Sphere {
     /// Draws the sphere.
-    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform) {
+    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform, texture: &glium::texture::srgb_texture2d::SrgbTexture2d) {
         let uniforms = uniform! {
                 color: self.color,
                 translation: transform.get_translation(),
                 scale: transform.get_scaling(),
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
+                tex: texture
             };
 
         // println!("translation: {:?}\n#########\nscale: {:?}\n#########\nrotation: {:?}\n#########\nself_rotation: {:?}", transform.get_translation(), transform.get_scaling(), transform.get_rotation(), transform.get_self_rotation());

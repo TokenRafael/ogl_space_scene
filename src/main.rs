@@ -3,12 +3,15 @@ mod shapes;
 #[macro_use]
 extern crate glium;
 
+extern crate image;
+
 use std::any::Any;
 use std::f32::consts::PI;
 use glium::{Display, glutin, Surface};
 use glium::backend::glutin::DisplayCreationError;
 use glium::glutin::event::Event;
 use glium::glutin::event_loop::EventLoop;
+use glium::texture::*;
 use shapes::matrices;
 use crate::glutin::event_loop::ControlFlow;
 use crate::shapes::{Drawable, Transform};
@@ -34,10 +37,22 @@ fn start_opengl(
 }
 
 fn main() {
+
+    //Loading image
+    use std::io::Cursor;
+    let image = image::load(Cursor::new(&include_bytes!("imgs/2k_venus_surface.jpg")),
+                            image::ImageFormat::Jpeg).unwrap().to_rgba8();
+
+    let image_dimensions = image.dimensions();
+    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+
+
     let (event_loop, display) = match start_opengl("First", None) {
         (event_loop, Ok(display)) => (event_loop, display),
         (_, Err(e)) => panic!("Could not create window: {e}"),
     };
+
+    let texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
@@ -76,9 +91,9 @@ fn main() {
         let perspective = matrices::perspective_matrix(&mut target);
 
         earth.draw(&mut target, &draw_params, Transform {
-            scale: s,
+            rotate_self: [0.0, a, 0.0],
             ..Default::default()
-        });
+        }, &texture);
 
         target.finish().unwrap();
     })
