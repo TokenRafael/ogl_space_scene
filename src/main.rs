@@ -37,22 +37,13 @@ fn start_opengl(
 }
 
 fn main() {
-
-    //Loading image
-    use std::io::Cursor;
-    let image = image::load(Cursor::new(&include_bytes!("imgs/2k_venus_surface.jpg")),
-                            image::ImageFormat::Jpeg).unwrap().to_rgba8();
-
-    let image_dimensions = image.dimensions();
-    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-
-
     let (event_loop, display) = match start_opengl("First", None) {
         (event_loop, Ok(display)) => (event_loop, display),
         (_, Err(e)) => panic!("Could not create window: {e}"),
     };
 
-    let texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
+    let texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
+
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
