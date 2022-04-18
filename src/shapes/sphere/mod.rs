@@ -29,6 +29,25 @@ impl Sphere {
     /// let sphere = Sphere::new(1.0, [1.0, 0.0, 0.0], 10, 10);
     /// ```
     pub fn new(display: &Display, radius: f32, color: [f32; 3], lats: usize, longs: usize) -> Self {
+        let (vertices, indices) = Self::generate_vertices_and_indexes(radius, lats, longs);
+
+        let vertex_buffer = glium::VertexBuffer::new(display, &vertices[..]).unwrap();
+        let index_buffer = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &indices[..]).unwrap();
+
+        Sphere {
+            vertices: vertex_buffer,
+            indices: index_buffer,
+            color,
+            program: glium::Program::from_source(
+                display,
+                include_str!("sphere.vert"),
+                include_str!("sphere.frag"),
+                None,
+            ).unwrap(),
+        }
+    }
+
+    fn generate_vertices_and_indexes(radius: f32, lats: usize, longs: usize) -> (Vec<Vertex>, Vec<u16>) {
         let mut vertices = Vec::with_capacity(lats * longs);
         let mut indices = Vec::with_capacity(lats * longs * 6);
 
