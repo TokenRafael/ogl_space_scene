@@ -47,6 +47,7 @@ fn main() {
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
+        .texture(texture)
         .build(&display);
 
     let draw_params = glium::draw_parameters::DrawParameters {
@@ -84,7 +85,7 @@ fn main() {
         earth.draw(&mut target, &draw_params, Transform {
             rotate_self: [0.0, a, 0.0],
             ..Default::default()
-        }, &texture);
+        });
 
         target.finish().unwrap();
     })

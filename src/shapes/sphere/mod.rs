@@ -4,7 +4,7 @@ use glium::{Display, Surface, VertexBuffer};
 use glium::IndexBuffer;
 use glium::texture::*;
 
-use crate::shapes::{Drawable, Transform, Vertex};
+use crate::shapes::{Drawable, Filling, Transform, Vertex};
 
 mod builder;
 pub use self::builder::SphereBuilder;
@@ -16,7 +16,7 @@ pub use self::builder::SphereBuilder;
 pub struct Sphere {
     vertices: VertexBuffer<Vertex>,
     indices: IndexBuffer<u16>,
-    color: [f32; 3],
+    filling: Filling,
     program: glium::Program,
 }
 
@@ -28,20 +28,25 @@ impl Sphere {
     /// use rt::shapes::Sphere;
     /// let sphere = Sphere::new(1.0, [1.0, 0.0, 0.0], 10, 10);
     /// ```
-    pub fn new(display: &Display, radius: f32, color: [f32; 3], lats: usize, longs: usize) -> Self {
+    pub fn new(display: &Display, radius: f32, filling: Filling, lats: usize, longs: usize) -> Self {
         let (vertices, indices) = Self::generate_vertices_and_indexes(radius, lats, longs);
 
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices[..]).unwrap();
         let index_buffer = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &indices[..]).unwrap();
 
+        let frag_shader = if let Filling::Color(_) = &filling {
+            include_str!("sphere.frag")
+        } else {
+            include_str!("sphere_texture.frag")
+        };
         Sphere {
             vertices: vertex_buffer,
             indices: index_buffer,
-            color,
+            filling,
             program: glium::Program::from_source(
                 display,
                 include_str!("sphere.vert"),
-                include_str!("sphere.frag"),
+                frag_shader,
                 None,
             ).unwrap(),
         }
@@ -80,12 +85,12 @@ impl Sphere {
                     let longs = longs as u16;
                     let lat = lat as u16;
 
-                    indices.append( &mut vec![
+                    indices.append(&mut vec![
                         long + lat * longs,
                         (long + 1) + lat * longs,
                         long + (lat + 1) * longs
                     ]);
-                    indices.append( &mut vec![
+                    indices.append(&mut vec![
                         (long + 1) + lat * longs,
                         (long + 1) + (lat + 1) * longs,
                         long + (lat + 1) * longs
@@ -93,21 +98,7 @@ impl Sphere {
                 }
             }
         }
-
-        let vertex_buffer = glium::VertexBuffer::new(display, &vertices[..]).unwrap();
-        let index_buffer = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &indices[..]).unwrap();
-
-        Sphere {
-            vertices: vertex_buffer,
-            indices: index_buffer,
-            color,
-            program: glium::Program::from_source(
-                display,
-                include_str!("sphere.vert"),
-                include_str!("sphere.frag"),
-                None,
-            ).unwrap(),
-        }
+        (vertices, indices)
     }
 
     pub fn get_vertices(&self) -> &VertexBuffer<Vertex> {
@@ -118,24 +109,28 @@ impl Sphere {
         &self.program
     }
 
-    pub fn get_color(&self) -> [f32; 3] {
-        self.color
+    pub fn get_filling(&self) -> &Filling {
+        &self.filling
     }
 }
 
 impl Drawable for Sphere {
     /// Draws the sphere.
-    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform, texture: &glium::texture::srgb_texture2d::SrgbTexture2d) {
+    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform) {
         let uniforms = uniform! {
-                color: self.color,
                 translation: transform.get_translation(),
                 scale: transform.get_scaling(),
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
-                tex: texture
             };
-
-        // println!("translation: {:?}\n#########\nscale: {:?}\n#########\nrotation: {:?}\n#########\nself_rotation: {:?}", transform.get_translation(), transform.get_scaling(), transform.get_rotation(), transform.get_self_rotation());
+        match &self.filling {
+            Filling::Color(color) => {
+                uniforms.add("color", color.clone());
+            },
+            Filling::Texture(texture) => {
+                uniforms.add("texture", texture.clone());
+            },
+        }
 
         target.draw(
             &self.vertices,
@@ -144,9 +139,5 @@ impl Drawable for Sphere {
             &uniforms,
             &params,
         ).unwrap();
-
-        for (name, value) in self.program.uniforms() {
-            println!("{:?}: {:?}", name, value);
-        };
     }
 }

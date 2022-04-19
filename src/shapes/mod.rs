@@ -3,6 +3,11 @@ use crate::{rotate, scale, translate};
 pub mod sphere;
 pub mod matrices;
 
+pub enum Filling {
+    Color([f32; 3]),
+    Texture(texture::SrgbTexture2d),
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vertex {
     position: [f32; 3],
@@ -27,7 +32,7 @@ impl Vertex {
 implement_vertex!(Vertex, position, tex_coords);
 
 pub trait Drawable {
-    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform, texture: &glium::texture::srgb_texture2d::SrgbTexture2d);
+    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform);
 }
 
 pub struct Transform {

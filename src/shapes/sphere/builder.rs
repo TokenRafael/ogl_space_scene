@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use glium::Display;
+use crate::shapes::Filling;
 
 use crate::shapes::sphere::Sphere;
 
@@ -28,7 +29,7 @@ impl SphereBuilder {
     pub fn new() -> Self {
         SphereBuilder {
             radius: 1.0,
-            color: [1.0, 0.0, 0.0],
+            filling: Filling::Color([1.0, 0.0, 0.0]),
             lats: 100,
             longs: 100,
         }
@@ -42,7 +43,12 @@ impl SphereBuilder {
 
     /// Sets the color of the sphere.
     pub fn color(mut self, color: [f32; 3]) -> Self {
-        self.color = color;
+        self.filling = Filling::Color(color);
+        self
+    }
+
+    pub fn texture(mut self, texture: glium::texture::SrgbTexture2d) -> Self {
+        self.filling = Filling::Texture(texture);
         self
     }
 
