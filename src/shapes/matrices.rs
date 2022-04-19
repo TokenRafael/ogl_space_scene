@@ -66,9 +66,9 @@ macro_rules! rotate {
     };
     ($x: expr, $y: expr, $z: expr) => {
         [
-            [$z.cos() * $y.cos(), $z.sin() * $y.sin() * $x.cos() - $z.cos() * $x.sin(), $z.cos() * $y.sin() * $x.cos() + $z.sin() * $x.sin(), 0.0],
-            [$z.sin() * $y.cos(), $z.sin() * $y.sin() * $x.sin() + $z.cos() * $x.cos(), $z.cos() * $y.sin() * $x.sin() - $z.sin() * $y.cos(), 0.0],
-            [-$y.sin(), $y.cos() * $x.sin(), $z.cos() * $y.cos(), 0.0],
+            [$z.cos() * $y.cos(), $z.cos() * $y.sin() * $x.sin() - $z.sin() * $x.cos(), $z.cos() * $y.sin() * $x.cos() + $z.sin() * $x.sin(), 0.0],
+            [$z.sin() * $y.cos(), $z.sin() * $y.sin() * $x.sin() + $z.cos() * $x.cos(), $z.sin() * $y.sin() * $x.cos() - $z.cos() * $x.sin(), 0.0],
+            [-$y.sin(), $y.cos() * $x.sin(), $x.cos() * $y.cos(), 0.0],
             [0.0, 0.0, 0.0, 1.0f32],
         ]
     }

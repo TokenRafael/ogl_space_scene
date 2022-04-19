@@ -5,9 +5,28 @@ pub mod sphere;
 pub mod cube;
 pub mod matrices;
 
+#[derive(Debug)]
 pub enum Filling {
     Color([f32; 3]),
     Texture(texture::SrgbTexture2d),
+}
+
+impl Filling {
+    pub fn get_color(&self) -> Option<[f32; 3]> {
+        if let Filling::Color(color) = self {
+            Some(*color)
+        } else {
+            None
+        }
+    }
+
+    pub fn get_texture(&self) -> Option<&texture::SrgbTexture2d> {
+        if let Filling::Texture(texture) = self {
+            Some(texture)
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]

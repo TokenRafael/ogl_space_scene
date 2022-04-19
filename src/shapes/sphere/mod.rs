@@ -40,6 +40,7 @@ impl Sphere {
         } else {
             include_str!("sphere_texture.frag")
         };
+        println!("{}\n==============\n", frag_shader);
         Sphere {
             vertices: vertex_buffer,
             indices: index_buffer,
@@ -125,14 +126,16 @@ impl Drawable for Sphere {
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
             };
-        match &self.filling {
+        match dbg!(&self.filling) {
             Filling::Color(color) => {
-                uniforms.add("color", color.clone());
+                uniforms.add("color", dbg!([color[0], color[1], color[2]]));
             },
             Filling::Texture(texture) => {
                 uniforms.add("texture", texture.clone());
             },
         }
+
+
 
         target.draw(
             &self.vertices,

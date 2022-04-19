@@ -42,12 +42,31 @@ fn main() {
         (_, Err(e)) => panic!("Could not create window: {e}"),
     };
 
-    let texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
+    let earth_texture = load_tex!(display, "imgs/2k_earth_daymap.jpg", jpeg);
+    let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_earth_daymap.jpg")),
+                            image::ImageFormat::Jpeg).unwrap().to_rgba8();
 
+    let image_dimensions = image.dimensions();
+    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+
+    let earth_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
-        .texture(texture)
+        .texture(earth_texture)
+        .build(&display);
+
+    let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
+    // let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_venus_surface.jpg")),
+    //                         image::ImageFormat::Jpeg).unwrap().to_rgba8();
+    //
+    // let image_dimensions = image.dimensions();
+    // let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+    //
+    // let moon_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
+    let moon = shapes::sphere::SphereBuilder::new()
+        .radius(0.1)
+        .texture(moon_texture)
         .build(&display);
 
     let asteroid = shapes::cube::CubeBuilder::new()
@@ -67,7 +86,7 @@ fn main() {
 
     // Render runtime
     let mut angle = (0..360)
-        .map(|i| i as f32 * PI / 180.0)
+        .map(|i| i as f32 * PI / 180.0) // transform to radians
         .cycle();
 
     let mut size = (0..240) // frames
@@ -93,10 +112,17 @@ fn main() {
             ..Default::default()
         });
 
+        moon.draw(&mut target, &draw_params, Transform {
+            translation: [-0.8, 0.0, 0.0],
+            rotate_self: [0.0, a, 0.0],
+            rotation: [0.0, a, a.cos() * 0.4],
+            ..Default::default()
+        });
+
         asteroid.draw(&mut target, &draw_params, Transform {
             translation: [0.5, 0.5, 0.5],
             rotate_self: [0.0, a, 0.2],
-            scale: 0.05 + s/10.0,
+            scale: 0.05,
             ..Default::default()
         });
 
