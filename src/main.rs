@@ -50,6 +50,11 @@ fn main() {
         .texture(texture)
         .build(&display);
 
+    let asteroid = shapes::cube::CubeBuilder::new()
+        .size(0.5)
+        .color([0.2; 3])
+        .build(&display);
+
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
             test: glium::DepthTest::IfLess,
@@ -84,6 +89,14 @@ fn main() {
 
         earth.draw(&mut target, &draw_params, Transform {
             rotate_self: [0.0, a, 0.0],
+            scale: 0.3,
+            ..Default::default()
+        });
+
+        asteroid.draw(&mut target, &draw_params, Transform {
+            translation: [0.5, 0.5, 0.5],
+            // rotate_self: [0.0, a, 0.2],
+            scale: 0.05,
             ..Default::default()
         });
 

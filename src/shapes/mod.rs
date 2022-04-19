@@ -1,6 +1,8 @@
+use glium::texture;
 use crate::{rotate, scale, translate};
 
 pub mod sphere;
+pub mod cube;
 pub mod matrices;
 
 pub enum Filling {
