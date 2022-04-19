@@ -5,6 +5,7 @@ use glium::IndexBuffer;
 use glium::texture::*;
 
 use crate::shapes::{Drawable, Filling, Transform, Vertex};
+use crate::translate;
 
 mod builder;
 pub use self::builder::SphereBuilder;
@@ -119,6 +120,7 @@ impl Drawable for Sphere {
     fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform) {
         let uniforms = uniform! {
                 translation: transform.get_translation(),
+                undo_translation: translate!(-transform.translation[0], -transform.translation[1], -transform.translation[2]),
                 scale: transform.get_scaling(),
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),

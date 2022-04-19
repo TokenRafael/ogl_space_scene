@@ -8,7 +8,7 @@ use crate::shapes::sphere::Sphere;
 /// Helps to create a sphere.
 pub struct SphereBuilder {
     radius: f32,
-    color: [f32; 3],
+    filling: Filling,
     lats: usize,
     longs: usize,
 }
@@ -66,6 +66,6 @@ impl SphereBuilder {
 
     /// Builds the sphere.
     pub fn build(self, display: &Display) -> Sphere {
-        Sphere::new(display, self.radius, self.color, self.lats, self.longs)
+        Sphere::new(display, self.radius, self.filling, self.lats, self.longs)
     }
 }
