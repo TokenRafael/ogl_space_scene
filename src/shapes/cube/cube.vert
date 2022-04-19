@@ -9,12 +9,10 @@ uniform mat4 scale;
 uniform mat4 self_rotation;
 
 void main() {
+    vec4 rotated = self_rotation * vec4(position, 1.0);
     gl_Position =
-    self_rotation *
     translation *
     rotation *
-    //    undo_translation *
-//        translation *
     scale *
-    vec4(position, 1.0);
+    rotated;
 }

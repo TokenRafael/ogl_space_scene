@@ -12,12 +12,10 @@ uniform mat4 self_rotation;
 
 void main() {
     v_tex_coords = tex_coords;
+    vec4 rotated = self_rotation * vec4(position, 1.0);
     gl_Position =
-        translation *
-        rotation *
-        undo_translation *
-        self_rotation *
-        translation *
-        scale *
-        vec4(position, 1.0);
+    translation *
+    rotation *
+    scale *
+    rotated;
 }

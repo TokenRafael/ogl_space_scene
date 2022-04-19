@@ -10,7 +10,7 @@ pub struct CubeBuilder {
 impl CubeBuilder {
     pub fn new() -> Self {
         CubeBuilder {
-            origin: [-0.5, -0.5, -0.5],
+            origin: [0.0; 3],
             size: 1.0,
             color: [1.0, 1.0, 1.0],
         }

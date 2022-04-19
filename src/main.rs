@@ -95,8 +95,8 @@ fn main() {
 
         asteroid.draw(&mut target, &draw_params, Transform {
             translation: [0.5, 0.5, 0.5],
-            // rotate_self: [0.0, a, 0.2],
-            scale: 0.05,
+            rotate_self: [0.0, a, 0.2],
+            scale: 0.05 + s/10.0,
             ..Default::default()
         });
 
