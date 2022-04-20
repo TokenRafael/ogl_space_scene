@@ -14,7 +14,7 @@ use glium::glutin::event_loop::EventLoop;
 use glium::texture::*;
 use shapes::matrices;
 use crate::glutin::event_loop::ControlFlow;
-use crate::shapes::{Drawable, Transform};
+use crate::shapes::{DynDrawble, StaticDrawble, Transform};
 
 type Light = [f32; 3];
 
@@ -74,10 +74,13 @@ fn main() {
         .color([0.2; 3])
         .build(&display);
 
+    let sky = shapes::sky::Sky::new(&display);
+
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
             test: glium::DepthTest::IfLess,
             write: true,
+            range: (0.0, 0.9),
             ..Default::default()
         },
         // backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
@@ -98,7 +101,7 @@ fn main() {
         let s = size.next().unwrap();
         let mut target = display.draw();
 
-        target.clear_color_and_depth((0.2, 0.7, 0.6, 1.), 1.);
+        target.clear_color_and_depth((0., 0., 0., 1.), 1.);
 
         set_wait(cf, 16_666_667);
 
@@ -125,6 +128,8 @@ fn main() {
             scale: 0.5,
             ..Default::default()
         });
+
+        sky.draw(&mut target, &draw_params);
 
         target.finish().unwrap();
     })

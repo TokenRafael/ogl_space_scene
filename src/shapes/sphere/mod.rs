@@ -4,7 +4,7 @@ use glium::{Display, Surface, VertexBuffer};
 use glium::IndexBuffer;
 use glium::texture::*;
 
-use crate::shapes::{Drawable, Filling, Transform, Vertex};
+use crate::shapes::{DynDrawble, Filling, Transform, Vertex};
 use crate::translate;
 
 mod builder;
@@ -40,7 +40,7 @@ impl Sphere {
         } else {
             include_str!("sphere_texture.frag")
         };
-        println!("{}\n==============\n", frag_shader);
+
         Sphere {
             vertices: vertex_buffer,
             indices: index_buffer,
@@ -116,7 +116,7 @@ impl Sphere {
     }
 }
 
-impl Drawable for Sphere {
+impl DynDrawble for Sphere {
     /// Draws the sphere.
     fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform) {
         let uniforms = uniform! {
@@ -126,7 +126,7 @@ impl Drawable for Sphere {
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
             };
-        match dbg!(&self.filling) {
+        match &self.filling {
             Filling::Color(color) => {
                 uniforms.add("color", dbg!([color[0], color[1], color[2]]));
             },

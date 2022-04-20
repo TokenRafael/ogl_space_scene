@@ -3,7 +3,7 @@ use glium::index::NoIndices;
 
 pub use builder::CubeBuilder;
 
-use crate::{Drawable, Transform};
+use crate::{DynDrawble, Transform};
 use crate::shapes::Vertex;
 use crate::translate;
 
@@ -116,7 +116,7 @@ impl Cube {
     }
 }
 
-impl Drawable for Cube {
+impl DynDrawble for Cube {
     fn draw(&self,
             target: &mut Frame,
             params: &DrawParameters,

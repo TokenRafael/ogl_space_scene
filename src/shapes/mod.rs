@@ -4,6 +4,7 @@ use crate::{rotate, scale, translate};
 pub mod sphere;
 pub mod cube;
 pub mod matrices;
+pub mod sky;
 
 #[derive(Debug)]
 pub enum Filling {
@@ -52,8 +53,12 @@ impl Vertex {
 
 implement_vertex!(Vertex, position, tex_coords);
 
-pub trait Drawable {
+pub trait DynDrawble {
     fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform);
+}
+
+pub trait StaticDrawble {
+    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters);
 }
 
 pub struct Transform {

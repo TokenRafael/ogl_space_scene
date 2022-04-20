@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 glium = { version = "0.31.0", features = ["default", "unstable"] }
 image = "*"
+rand = "0.8.5"
