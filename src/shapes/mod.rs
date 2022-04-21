@@ -1,3 +1,5 @@
+use std::iter::Map;
+use std::ops::Range;
 use glium::texture;
 use crate::{rotate, scale, translate};
 
@@ -53,12 +55,20 @@ impl Vertex {
 
 implement_vertex!(Vertex, position, tex_coords);
 
+pub fn map_range((from_start, from_end): (f32, f32), (to_start, to_end): (f32, f32), value: f32) -> f32 {
+    let from_range = from_end - from_start;
+    let to_range = to_end - to_start;
+    let from_value = value - from_start;
+    let to_value = from_value * to_range / from_range + to_start;
+    to_value
+}
+
 pub trait DynDrawble {
     fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform);
 }
 
 pub trait StaticDrawble {
-    fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters);
+    fn draw(&mut self, target: &mut glium::Frame, params: &glium::DrawParameters);
 }
 
 pub struct Transform {

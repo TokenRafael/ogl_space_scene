@@ -137,10 +137,7 @@ impl DynDrawble for Cube {
             &self.indices,
             &self.program,
             &uniforms,
-            &DrawParameters {
-                line_width: Some(3.0),
-                ..params.clone()
-            },
+            &params
         ).unwrap();
 
         // Draw cube wireframe

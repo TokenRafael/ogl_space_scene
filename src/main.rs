@@ -42,21 +42,21 @@ fn main() {
         (_, Err(e)) => panic!("Could not create window: {e}"),
     };
 
+    let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
     let earth_texture = load_tex!(display, "imgs/2k_earth_daymap.jpg", jpeg);
-    let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_earth_daymap.jpg")),
-                            image::ImageFormat::Jpeg).unwrap().to_rgba8();
+    // let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_earth_daymap.jpg")),
+    //                         image::ImageFormat::Jpeg).unwrap().to_rgba8();
 
-    let image_dimensions = image.dimensions();
-    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+    // let image_dimensions = image.dimensions();
+    // let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
 
-    let earth_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
+    // let earth_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
         .texture(earth_texture)
         .build(&display);
 
-    let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
     // let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_venus_surface.jpg")),
     //                         image::ImageFormat::Jpeg).unwrap().to_rgba8();
     //
@@ -74,7 +74,7 @@ fn main() {
         .color([0.2; 3])
         .build(&display);
 
-    let sky = shapes::sky::Sky::new(&display);
+    let mut sky = shapes::sky::Sky::new(&display);
 
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
