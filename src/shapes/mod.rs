@@ -44,7 +44,7 @@ impl Vertex {
 
         //UV mapping
 
-        let u = 0.5 + (p0.atan2(p2) / (std::f32::consts::PI * 2.0));
+        let u = - (0.5 + (p0.atan2(p2) / (std::f32::consts::PI * 2.0)));
         let v = 0.5 + p1.asin() / std::f32::consts::PI;
 
         Vertex {
