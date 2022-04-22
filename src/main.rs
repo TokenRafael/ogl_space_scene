@@ -96,7 +96,7 @@ fn main() {
         .map(|i| (i - 120) as f32 * 0.3 / 240.0 + 0.4)
         .cycle();
 
-    let mut spin = 0.0;
+    let mut spin = PI;
     let mut grow = 0.15;
     let mut tilt = 0.4;
     let mut key_pressed = keys{
@@ -119,8 +119,14 @@ fn main() {
 
         let perspective = matrices::perspective_matrix(&mut target);
 
+        if key_pressed.j {
+            spin += 0.01;
+        } else if key_pressed.k {
+            spin -= 0.01;
+        }
+
         earth.draw(&mut target, &draw_params, Transform {
-            rotate_self: [0.0, a, 0.0],
+            rotate_self: [0.0, spin, 0.0],
             scale: 0.3,
             ..Default::default()
         });  
@@ -130,11 +136,7 @@ fn main() {
         } else if key_pressed.a {
             tilt -= 0.01;
         } 
-        if key_pressed.j {
-            spin += 0.01;
-        } else if key_pressed.k {
-            spin -= 0.01;
-        }
+
         if tilt > 1.0 {
             tilt = 1.0;
         } else if tilt < -1.0 {
@@ -143,7 +145,7 @@ fn main() {
         moon.draw(&mut target, &draw_params, Transform {
             
             translation: [-0.8 , 0.0, 0.0],
-            rotate_self: [0.0, spin, 0.0],
+            rotate_self: [0.0, a, 0.0],
             rotation: [0.0, a, a.cos() * tilt],
             ..Default::default()
         });
