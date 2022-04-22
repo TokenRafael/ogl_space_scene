@@ -15,6 +15,10 @@ use glium::texture::*;
 use shapes::matrices;
 use crate::glutin::event_loop::ControlFlow;
 use crate::shapes::{DynDrawble, StaticDrawble, Transform};
+use crate::glutin::event::KeyboardInput;
+use glutin::event::VirtualKeyCode;
+use glutin::event::ElementState;
+use glutin::event::WindowEvent;
 
 type Light = [f32; 3];
 
@@ -92,16 +96,26 @@ fn main() {
         .map(|i| (i - 120) as f32 * 0.3 / 240.0 + 0.4)
         .cycle();
 
+    let mut spin = 0.0;
+    let mut grow = 0.15;
+    let mut tilt = 0.4;
+    let mut key_pressed = keys{
+        w:false,
+        a:false,
+        s:false,
+        d:false,
+        j:false,
+        k:false,
+    };
     event_loop.run(move |ev, _, cf| {
         let a = angle.next().unwrap();
         let s = size.next().unwrap();
         let mut target = display.draw();
-
         target.clear_color_and_depth((0., 0., 0., 1.), 1.);
 
         set_wait(cf, 16_666_667);
 
-        event_handle(ev, cf);
+        event_handle(ev, cf,&mut key_pressed);
 
         let perspective = matrices::perspective_matrix(&mut target);
 
@@ -109,18 +123,45 @@ fn main() {
             rotate_self: [0.0, a, 0.0],
             scale: 0.3,
             ..Default::default()
-        });
+        });  
 
+        if key_pressed.d {
+            tilt += 0.01;
+        } else if key_pressed.a {
+            tilt -= 0.01;
+        } 
+        if key_pressed.j {
+            spin += 0.01;
+        } else if key_pressed.k {
+            spin -= 0.01;
+        }
+        if tilt > 1.0 {
+            tilt = 1.0;
+        } else if tilt < -1.0 {
+            tilt = -1.0;
+        }
         moon.draw(&mut target, &draw_params, Transform {
-            translation: [-0.8, 0.0, 0.0],
-            rotate_self: [0.0, a, 0.0],
-            rotation: [0.0, a, a.cos() * 0.4],
+            
+            translation: [-0.8 , 0.0, 0.0],
+            rotate_self: [0.0, spin, 0.0],
+            rotation: [0.0, a, a.cos() * tilt],
             ..Default::default()
         });
 
+        if key_pressed.w {
+            grow += 0.01;
+        } else if key_pressed.s {
+            grow -= 0.01;
+        }
+        if (grow  ) < 0.02 {
+            grow = 0.01;
+        }else if grow > 1.0 {
+            grow = 1.0;
+        }
         saturn.draw(&mut target, &draw_params, Transform {
+            
             translation: [-0.7, 0.7, 0.0],
-            scale: 0.15,
+            scale: grow,
             rotate_self: [0.0, -a, -0.4],
             ..Default::default()
         });
@@ -142,10 +183,73 @@ fn set_wait(cf: &mut ControlFlow, nanos: u64) {
     let next_frame_time = std::time::Instant::now() + std::time::Duration::from_nanos(nanos);
     *cf = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
 }
-
-fn event_handle(ev: Event<()>, cf: &mut ControlFlow) {
+struct keys{
+    w: bool,
+    a: bool,
+    s: bool,
+    d: bool,
+    j: bool,
+    k: bool,
+}
+fn event_handle(ev: Event<()>, cf: &mut ControlFlow, key_pressed : &mut keys)  {
     match ev {
         glutin::event::Event::WindowEvent { event, .. } => match event {
+            WindowEvent::KeyboardInput{input,..}=>{
+                let KeyboardInput {state,virtual_keycode, ..} = input;
+                let virtual_keycode = if let Some(code) = virtual_keycode { code } else { return };
+                match virtual_keycode {
+                        VirtualKeyCode::W => {
+                            if state == ElementState::Pressed {
+                                key_pressed.w = true;
+
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.w = false;
+                            }
+                        },
+                        VirtualKeyCode::A => {
+                            if state == ElementState::Pressed {
+                                key_pressed.a = true;
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.a = false;
+                            }
+                        },
+                        VirtualKeyCode::S => {
+                            if state == ElementState::Pressed {
+                                key_pressed.s = true;
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.s = false;
+                            }
+                        },
+                        VirtualKeyCode::D => {
+                            if state == ElementState::Pressed {
+                                key_pressed.d = true;
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.d = false;
+                            }
+                        },
+                        VirtualKeyCode::J => {
+                            if state == ElementState::Pressed {
+                                key_pressed.j = true;
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.j = false;
+                            }
+                        },
+                        VirtualKeyCode::K => {
+                            if state == ElementState::Pressed {
+                                key_pressed.k = true;
+                            }
+                            else if state == ElementState::Released {
+                                key_pressed.k = false;
+                            }
+                        },
+                        _ => (),
+                }
+            },
             glutin::event::WindowEvent::CloseRequested => {
                 *cf = glutin::event_loop::ControlFlow::Exit;
                 return;
