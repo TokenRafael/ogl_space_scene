@@ -66,7 +66,8 @@ fn main() {
     // let moon_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
     let moon = shapes::sphere::SphereBuilder::new()
         .radius(0.1)
-        .texture(moon_texture)
+        // .texture(moon_texture)
+        .color([0.5; 3])
         .build(&display);
 
     let asteroid = shapes::cube::CubeBuilder::new()
@@ -125,7 +126,7 @@ fn main() {
         asteroid.draw(&mut target, &draw_params, Transform {
             translation: [0.5, 0.5, 0.5],
             rotate_self: [0.0, a, 0.2],
-            scale: 0.5,
+            scale: 0.25,
             ..Default::default()
         });
 

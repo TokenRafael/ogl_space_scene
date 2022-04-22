@@ -27,7 +27,7 @@ impl Sphere {
     /// # Example
     /// ```no_run
     /// use rt::shapes::Sphere;
-    /// let sphere = Sphere::new(1.0, [1.0, 0.0, 0.0], 10, 10);
+    /// let sphere = Sphere::new(1.0, Filling::Color([1.0, 0.0, 0.0]), 10, 10);
     /// ```
     pub fn new(display: &Display, radius: f32, filling: Filling, lats: usize, longs: usize) -> Self {
         let (vertices, indices) = Self::generate_vertices_and_indexes(radius, lats, longs);
@@ -102,18 +102,6 @@ impl Sphere {
         }
         (vertices, indices)
     }
-
-    pub fn get_vertices(&self) -> &VertexBuffer<Vertex> {
-        &self.vertices
-    }
-
-    pub fn get_program(&self) -> &glium::Program {
-        &self.program
-    }
-
-    pub fn get_filling(&self) -> &Filling {
-        &self.filling
-    }
 }
 
 impl DynDrawble for Sphere {
@@ -128,21 +116,25 @@ impl DynDrawble for Sphere {
             };
         match &self.filling {
             Filling::Color(color) => {
-                uniforms.add("color", dbg!([color[0], color[1], color[2]]));
+                let uniforms = uniforms.add("color", dbg!([color[0], color[1], color[2]]));
+                target.draw(
+                    &self.vertices,
+                    &self.indices,
+                    &self.program,
+                    &uniforms,
+                    &params,
+                ).unwrap()
             },
             Filling::Texture(texture) => {
-                uniforms.add("texture", texture.clone());
+                let uniforms = uniforms.add("texture", texture.clone());
+                target.draw(
+                    &self.vertices,
+                    &self.indices,
+                    &self.program,
+                    &uniforms,
+                    &params,
+                ).unwrap()
             },
         }
-
-
-
-        target.draw(
-            &self.vertices,
-            &self.indices,
-            &self.program,
-            &uniforms,
-            &params,
-        ).unwrap();
     }
 }
