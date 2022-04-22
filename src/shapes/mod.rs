@@ -7,6 +7,7 @@ pub mod sphere;
 pub mod cube;
 pub mod matrices;
 pub mod sky;
+pub mod ring_planet;
 
 #[derive(Debug)]
 pub enum Filling {

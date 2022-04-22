@@ -19,6 +19,13 @@ pub struct Sphere {
     indices: IndexBuffer<u16>,
     filling: Filling,
     program: glium::Program,
+    pub radius: f32,
+}
+
+impl Sphere {
+    pub fn radius(&self) -> f32 {
+        self.radius
+    }
 }
 
 impl Sphere {
@@ -42,6 +49,7 @@ impl Sphere {
         };
 
         Sphere {
+            radius,
             vertices: vertex_buffer,
             indices: index_buffer,
             filling,

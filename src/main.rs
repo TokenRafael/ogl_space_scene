@@ -44,31 +44,26 @@ fn main() {
 
     let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
     let earth_texture = load_tex!(display, "imgs/2k_earth_daymap.jpg", jpeg);
-    // let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_earth_daymap.jpg")),
-    //                         image::ImageFormat::Jpeg).unwrap().to_rgba8();
-
-    // let image_dimensions = image.dimensions();
-    // let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-
-    // let earth_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
 
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
         .texture(earth_texture)
         .build(&display);
 
-    // let image = image::load(std::io::Cursor::new(&include_bytes!("imgs/2k_venus_surface.jpg")),
-    //                         image::ImageFormat::Jpeg).unwrap().to_rgba8();
-    //
-    // let image_dimensions = image.dimensions();
-    // let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-    //
-    // let moon_texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
     let moon = shapes::sphere::SphereBuilder::new()
         .radius(0.1)
         // .texture(moon_texture)
         .color([0.5; 3])
         .build(&display);
+
+    let saturn = shapes::ring_planet::RingPlanet::new(
+        &display,
+        1.3,
+        shapes::sphere::SphereBuilder::new()
+            .radius(1.0)
+            .color([0.0, 0.3, 0.7])
+            .build(&display),
+    );
 
     let asteroid = shapes::cube::CubeBuilder::new()
         .size(0.5)
@@ -120,6 +115,13 @@ fn main() {
             translation: [-0.8, 0.0, 0.0],
             rotate_self: [0.0, a, 0.0],
             rotation: [0.0, a, a.cos() * 0.4],
+            ..Default::default()
+        });
+
+        saturn.draw(&mut target, &draw_params, Transform {
+            translation: [-0.7, 0.7, 0.0],
+            scale: 0.15,
+            rotate_self: [0.0, -a, -0.4],
             ..Default::default()
         });
 
