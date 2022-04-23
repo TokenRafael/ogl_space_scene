@@ -124,7 +124,7 @@ impl DynDrawble for Sphere {
             };
         match &self.filling {
             Filling::Color(color) => {
-                let uniforms = uniforms.add("color", dbg!([color[0], color[1], color[2]]));
+                let uniforms = uniforms.add("color", [color[0], color[1], color[2]]);
                 target.draw(
                     &self.vertices,
                     &self.indices,

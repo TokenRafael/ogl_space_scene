@@ -76,6 +76,8 @@ fn main() {
 
     let mut sky = shapes::sky::Sky::new(&display);
 
+    let triangle = shapes::triangle::TriangleBuilder::new().build(&display);
+
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
             test: glium::DepthTest::IfLess,
@@ -89,7 +91,7 @@ fn main() {
 
     // Render runtime
     let mut angle = (0..360)
-        .map(|i| i as f32 * PI / 180.0) // transform to radians
+        .map(|i| (i as f32).to_radians())
         .cycle();
 
     let mut size = (0..240) // frames
@@ -176,6 +178,11 @@ fn main() {
         });
 
         sky.draw(&mut target, &draw_params);
+
+        triangle.draw(&mut target, &draw_params, Transform {
+            // translation: [0.0, 0.0, -1.0],
+            ..Default::default()
+        });
 
         target.finish().unwrap();
     })
