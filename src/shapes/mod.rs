@@ -9,6 +9,7 @@ pub mod matrices;
 pub mod sky;
 pub mod ring_planet;
 pub mod triangle;
+pub mod star;
 
 #[derive(Debug)]
 pub enum Filling {
@@ -73,6 +74,7 @@ pub trait StaticDrawble {
     fn draw(&mut self, target: &mut glium::Frame, params: &glium::DrawParameters);
 }
 
+#[derive(Clone)]
 pub struct Transform {
     /// Translate in [x, y, z]
     pub translation: [f32; 3],

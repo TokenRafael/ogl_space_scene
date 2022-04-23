@@ -78,7 +78,7 @@ fn main() {
 
     let mut sky = shapes::sky::Sky::new(&display);
 
-    let triangle = shapes::triangle::TriangleBuilder::new().build(&display);
+    let star = shapes::star::Star::new(&display);
 
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
@@ -160,8 +160,10 @@ fn main() {
 
         sky.draw(&mut target, &draw_params);
 
-        triangle.draw(&mut target, &draw_params, Transform {
-            // translation: [0.0, 0.0, -1.0],
+        star.draw(&mut target, &draw_params, Transform {
+            translation: [0.8, -0.5, 0.0],
+            rotate_self: [0.0, 0.0, a/6.0],
+            scale: 0.3,
             ..Default::default()
         });
 
