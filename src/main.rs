@@ -1,4 +1,5 @@
 mod shapes;
+mod event_handle;
 
 #[macro_use]
 extern crate glium;
@@ -19,6 +20,7 @@ use glutin::event::WindowEvent;
 use shapes::matrices;
 use std::any::Any;
 use std::f32::consts::PI;
+use event_handle::{MatrixParams, event_handle};
 
 type Light = [f32; 3];
 
@@ -172,79 +174,3 @@ fn set_wait(cf: &mut ControlFlow, nanos: u64) {
     *cf = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
 }
 
-pub struct MatrixParams
-{
-    pub grow: f32,
-    pub tilt: f32,
-    pub spin: f32,
-    pub translate_x: f32,
-    pub translate_y: f32,
-}
-
-impl MatrixParams
-{
-    fn new(grow: f32, tilt: f32, spin: f32, translate_x: f32, translate_y: f32) -> Self
-    {
-        MatrixParams{grow, tilt, spin, translate_x, translate_y}
-    }
-}
-
-fn event_handle(ev: Event<()>, cf: &mut ControlFlow, MatrixParams{ref mut grow, ref mut tilt, ref mut spin, ref mut translate_x, ref mut translate_y}: &mut MatrixParams) {
-    match ev {
-        glutin::event::Event::WindowEvent { event, .. } => match event {
-            WindowEvent::KeyboardInput { input, .. } => {
-                let KeyboardInput {
-                    state,
-                    virtual_keycode,
-                    ..
-                } = input;
-                let virtual_keycode = if let Some(code) = virtual_keycode {
-                    code
-                } else {
-                    return;
-                };
-                const STEP: f32 = 0.05;
-                if let state = ElementState::Pressed {
-                    match virtual_keycode {
-                        VirtualKeyCode::W => *grow += STEP,
-                        VirtualKeyCode::A => *tilt -= STEP,
-                        VirtualKeyCode::S => *grow -= STEP,
-                        VirtualKeyCode::D => *tilt += STEP,
-                        VirtualKeyCode::J => *spin += STEP,
-                        VirtualKeyCode::K => *spin -= STEP,
-                        VirtualKeyCode::Right => *translate_x += STEP,
-                        VirtualKeyCode::Left => *translate_x -= STEP,
-                        VirtualKeyCode::Up => *translate_y += STEP,
-                        VirtualKeyCode::Down => *translate_y -= STEP,
-                        _ => (),
-                    }
-                }
-
-                if *grow < 0.02 {
-                    *grow = 0.01;
-                } else if *grow > 1.0 {
-                    *grow = 1.0;
-                }
-
-                if *tilt > 1.0 {
-                   *tilt = 1.0;
-                } else if *tilt < -1.0 {
-                    *tilt = -1.0;
-                }
-
-            }
-
-            glutin::event::WindowEvent::CloseRequested => {
-                *cf = glutin::event_loop::ControlFlow::Exit;
-                return;
-            }
-            _ => return,
-        },
-        glutin::event::Event::NewEvents(cause) => match cause {
-            glutin::event::StartCause::ResumeTimeReached { .. } => (),
-            glutin::event::StartCause::Init => (),
-            _ => return,
-        },
-        _ => return,
-    }
-}
