@@ -108,7 +108,7 @@ fn main() {
 
         set_wait(cf, 16_666_667);
 
-        event_handle(ev, cf, &mut key_pressed, &mut mat_params);
+        event_handle(ev, cf,  &mut mat_params);
 
         let perspective = matrices::perspective_matrix(&mut target);
         let MatrixParams{grow, tilt, spin, translate_x, translate_y} = mat_params;
@@ -189,7 +189,7 @@ impl MatrixParams
     }
 }
 
-fn event_handle(ev: Event<()>, cf: &mut ControlFlow, key_pressed: &mut keys, MatrixParams{ref mut grow, ref mut tilt, ref mut spin, ref mut translate_x, ref mut translate_y}: &mut MatrixParams) {
+fn event_handle(ev: Event<()>, cf: &mut ControlFlow, MatrixParams{ref mut grow, ref mut tilt, ref mut spin, ref mut translate_x, ref mut translate_y}: &mut MatrixParams) {
     match ev {
         glutin::event::Event::WindowEvent { event, .. } => match event {
             WindowEvent::KeyboardInput { input, .. } => {
