@@ -149,7 +149,7 @@ fn main() {
             &mut target,
             &draw_params,
             Transform {
-                translation: [0.5, 0.5, 0.5],
+                translation: [0.5 + translate_x, 0.5 + translate_y, 0.5],
                 rotate_self: [0.0, a, 0.2],
                 scale: 0.25,
                 ..Default::default()
