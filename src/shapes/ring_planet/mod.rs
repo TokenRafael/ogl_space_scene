@@ -15,7 +15,7 @@ impl RingPlanet {
     pub fn new(display: &glium::Display, ring_radius: f32, sphere: Sphere) -> RingPlanet {
         assert!(sphere.radius() < ring_radius);
         let ring_points = (0..360)
-            .map(|i| i as f32 * PI / 180.0) // convert to radians
+            .map(|i| (i as f32).to_radians())
             .map(|angle| {
                 let x = angle.cos() * ring_radius;
                 let z = angle.sin() * ring_radius;

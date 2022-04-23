@@ -125,7 +125,6 @@ impl DynDrawble for Cube {
         let uniforms = uniform! {
             color: self.color,
             translation: transform.get_translation(),
-            undo_translation: translate!(-transform.translation[0], -transform.translation[1], -transform.translation[2]),
             rotation: transform.get_rotation(),
             scale: transform.get_scaling(),
             self_rotation: transform.get_self_rotation(),
