@@ -2,6 +2,9 @@ use std::f32::consts::PI;
 
 use glium::{Frame, Surface};
 
+/// Macros to create the matrices of the various transforms used in the program
+
+/// Creates a matrix that translates the object by the given amount
 #[macro_export]
 macro_rules! translate {
     [$param: expr, x] => {
@@ -38,6 +41,7 @@ macro_rules! translate {
     }
 }
 
+/// Creates a matrix that rotates the object by the given angle
 #[macro_export]
 macro_rules! rotate {
     [$param:expr, x] => {
@@ -74,6 +78,8 @@ macro_rules! rotate {
     }
 }
 
+
+/// Creates a matrix that scales the object by the given amount
 #[macro_export]
 macro_rules! scale {
     [$x: expr] => {
@@ -86,6 +92,7 @@ macro_rules! scale {
     };
 }
 
+/// Creates the identity matrix, used for convenience
 #[macro_export]
 macro_rules! identity {
     () => {
@@ -98,6 +105,7 @@ macro_rules! identity {
     };
 }
 
+/// Function that generates the perspective matrix
 pub fn perspective_matrix(target: &Frame) -> [[f32; 4]; 4] {
     let (width, height) = target.get_dimensions();
     let aspect_ratio = height as f32 / width as f32;

@@ -62,6 +62,7 @@ impl Sphere {
         }
     }
 
+    /// Function that generates vertices and indexes for a sphere.
     fn generate_vertices_and_indexes(radius: f32, lats: usize, longs: usize) -> (Vec<Vertex>, Vec<u16>) {
         let mut vertices = Vec::with_capacity(lats * longs);
         let mut indices = Vec::with_capacity(lats * longs * 6);

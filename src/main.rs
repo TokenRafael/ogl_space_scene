@@ -24,6 +24,7 @@ use event_handle::{MatrixParams, event_handle};
 
 type Light = [f32; 3];
 
+//Starts the window and the event loop
 fn start_opengl(
     title: &str,
     mut size: Option<(u32, u32)>,
@@ -42,26 +43,31 @@ fn start_opengl(
     (event_loop, display)
 }
 
+/// Main function
 fn main() {
     let (event_loop, display) = match start_opengl("First", None) {
         (event_loop, Ok(display)) => (event_loop, display),
         (_, Err(e)) => panic!("Could not create window: {e}"),
     };
 
-    let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
+    //let moon_texture = load_tex!(display, "imgs/2k_venus_surface.jpg", jpeg);
+    /// Loads the earth texture
     let earth_texture = load_tex!(display, "imgs/2k_earth_daymap.jpg", jpeg);
 
+    /// Initializes the earth object
     let earth = shapes::sphere::SphereBuilder::new()
         .radius(1.0)
         .texture(earth_texture)
         .build(&display);
 
+    /// Initializes the moon object
     let moon = shapes::sphere::SphereBuilder::new()
         .radius(0.1)
         // .texture(moon_texture)
         .color([0.5; 3])
         .build(&display);
 
+    /// Initializes the saturn object
     let saturn = shapes::ring_planet::RingPlanet::new(
         &display,
         1.3,
@@ -71,15 +77,18 @@ fn main() {
             .build(&display),
     );
 
+    ///Initalizes the asteroid object
     let asteroid = shapes::cube::CubeBuilder::new()
         .size(0.5)
         .color([0.2; 3])
         .build(&display);
 
+    /// Initializes the sky
     let mut sky = shapes::sky::Sky::new(&display);
 
     let star = shapes::star::Star::new(&display);
 
+    /// Defining the draw parameters
     let draw_params = glium::draw_parameters::DrawParameters {
         depth: glium::Depth {
             test: glium::DepthTest::IfLess,
@@ -91,7 +100,7 @@ fn main() {
         ..Default::default()
     };
 
-    // Render runtime
+    /// Render runtime
     let mut angle = (0..360)
         .map(|i| (i as f32).to_radians())
         .cycle();
@@ -100,6 +109,7 @@ fn main() {
         .map(|i| (i - 120) as f32 * 0.3 / 240.0 + 0.4)
         .cycle();
 
+    /// Initializing the parameters used in the various matrix transformations
     let mut mat_params = MatrixParams::new(0.15, 0.4, PI, 0., 0.);
 
     event_loop.run(move |ev, _, cf| {
@@ -115,6 +125,7 @@ fn main() {
         let perspective = matrices::perspective_matrix(&mut target);
         let MatrixParams{grow, tilt, spin, translate_x, translate_y} = mat_params;
 
+        /// Draws the earth
         earth.draw(
             &mut target,
             &draw_params,
@@ -125,6 +136,7 @@ fn main() {
             },
         );
 
+        /// Draws the moon
         moon.draw(
             &mut target,
             &draw_params,
@@ -136,6 +148,7 @@ fn main() {
             },
         );
 
+        /// Draws saturn
         saturn.draw(
             &mut target,
             &draw_params,
@@ -147,6 +160,7 @@ fn main() {
             },
         );
 
+        /// Draws the asteroid
         asteroid.draw(
             &mut target,
             &draw_params,
@@ -158,8 +172,10 @@ fn main() {
             },
         );
 
+        /// Draws the sky
         sky.draw(&mut target, &draw_params);
 
+        /// Draws the star
         star.draw(&mut target, &draw_params, Transform {
             translation: [0.8, -0.5, 0.0],
             rotate_self: [0.0, 0.0, a/6.0],
@@ -171,6 +187,7 @@ fn main() {
     })
 }
 
+/// Defines the wait time for the next frame
 fn set_wait(cf: &mut ControlFlow, nanos: u64) {
     let next_frame_time = std::time::Instant::now() + std::time::Duration::from_nanos(nanos);
     *cf = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);

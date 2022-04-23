@@ -11,6 +11,7 @@ pub mod ring_planet;
 pub mod triangle;
 pub mod star;
 
+/// Enum that decides the filling for a given shape, be it a RGB color or a texture.
 #[derive(Debug)]
 pub enum Filling {
     Color([f32; 3]),
@@ -44,8 +45,7 @@ pub struct Vertex {
 impl Vertex {
     pub fn new(p0: f32, p1: f32, p2: f32) -> Self {
 
-        //UV mapping
-
+        /// Maps the (x, y, z) coordinates to the (u, v) coordinates of the sphere.
         let u = - (0.5 + (p0.atan2(p2) / (std::f32::consts::PI * 2.0)));
         let v = 0.5 + p1.asin() / std::f32::consts::PI;
 
@@ -58,6 +58,7 @@ impl Vertex {
 
 implement_vertex!(Vertex, position, tex_coords);
 
+/// Function that normalizes a range [a, b] to a given range [c, d].
 pub fn map_range((from_start, from_end): (f32, f32), (to_start, to_end): (f32, f32), value: f32) -> f32 {
     let from_range = from_end - from_start;
     let to_range = to_end - to_start;
@@ -66,14 +67,17 @@ pub fn map_range((from_start, from_end): (f32, f32), (to_start, to_end): (f32, f
     to_value
 }
 
+/// Interface for moving drawable objects.
 pub trait DynDrawble {
     fn draw(&self, target: &mut glium::Frame, params: &glium::DrawParameters, transform: Transform);
 }
 
+/// Interface for static drawable objects.
 pub trait StaticDrawble {
     fn draw(&mut self, target: &mut glium::Frame, params: &glium::DrawParameters);
 }
 
+/// Struct that holds the transform parameters of a drawable object.
 #[derive(Clone)]
 pub struct Transform {
     /// Translate in [x, y, z]
@@ -115,6 +119,7 @@ impl Transform {
     }
 }
 
+/// Macro that loads a texture from a file and returns a texture.
 #[macro_export]
 macro_rules! load_tex {
     ($display: ident, $path: expr, jpeg) => {

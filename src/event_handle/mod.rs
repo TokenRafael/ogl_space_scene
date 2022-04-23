@@ -2,6 +2,7 @@ use glium::glutin::event::{ElementState, Event, VirtualKeyCode, WindowEvent};
 use glium::glutin::event_loop::ControlFlow;
 use crate::{glutin, KeyboardInput};
 
+/// Struct that stores the parameters used in the transformation of the keyboard input
 pub struct MatrixParams
 {
     pub grow: f32,
@@ -19,7 +20,15 @@ impl MatrixParams
     }
 }
 
-pub fn event_handle(ev: Event<()>, cf: &mut ControlFlow, MatrixParams{ref mut grow, ref mut tilt, ref mut spin, ref mut translate_x, ref mut translate_y}: &mut MatrixParams) {
+/// Function that handles the keyboard input
+pub fn event_handle(ev: Event<()>, cf: &mut ControlFlow,
+                    MatrixParams{
+                        ref mut grow,
+                        ref mut tilt,
+                        ref mut spin,
+                        ref mut translate_x,
+                        ref mut translate_y
+                    }: &mut MatrixParams) {
     match ev {
         glutin::event::Event::WindowEvent { event, .. } => match event {
             WindowEvent::KeyboardInput { input, .. } => {
@@ -34,7 +43,9 @@ pub fn event_handle(ev: Event<()>, cf: &mut ControlFlow, MatrixParams{ref mut gr
                     return;
                 };
                 const STEP: f32 = 0.05;
+                /// If the key is pressed, the value is changed
                 if let state = ElementState::Pressed {
+                    /// Parses the pressed key and changes the value
                     match virtual_keycode {
                         VirtualKeyCode::W => *grow += STEP,
                         VirtualKeyCode::A => *tilt -= STEP,
