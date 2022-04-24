@@ -9,5 +9,5 @@ a OpenGL Rust Library.
 
 - Dennis Lemke Green - 11219108
 - Eduardo Figueiredo Freire Andrade - 11232820
-- Fábio Dias Cunha - 11320874
+- Fábio Dias da Cunha - 11320874
 - Rafael Tavares Oliveira - 11219071
