@@ -1,5 +1,5 @@
 mod shapes;
-mod event_handle;
+mod event_handler;
 
 #[macro_use]
 extern crate glium;
@@ -20,7 +20,7 @@ use glutin::event::WindowEvent;
 use shapes::matrices;
 use std::any::Any;
 use std::f32::consts::PI;
-use event_handle::{MatrixParams, event_handle};
+use event_handler::EventHandler;
 
 type Light = [f32; 3];
 
@@ -109,8 +109,8 @@ fn main() {
         .map(|i| (i - 120) as f32 * 0.3 / 240.0 + 0.4)
         .cycle();
 
-    /// Initializing the parameters used in the various matrix transformations
-    let mut mat_params = MatrixParams::new(0.15, 0.4, PI, 0., 0.);
+    /// Initializes the event handler
+    let mut event_handler = EventHandler::new(0.15, 0.4, PI, 0., 0.);
 
     event_loop.run(move |ev, _, cf| {
         let a = angle.next().unwrap();
@@ -120,10 +120,11 @@ fn main() {
 
         set_wait(cf, 16_666_667);
 
-        event_handle(ev, cf,  &mut mat_params);
+        /// Handles the events
+        event_handler.handle_event(ev, cf);
 
         let perspective = matrices::perspective_matrix(&mut target);
-        let MatrixParams{grow, tilt, spin, translate_x, translate_y} = mat_params;
+        let EventHandler {grow, tilt, spin, translate_x, translate_y} = event_handler;
 
         /// Draws the earth
         earth.draw(
