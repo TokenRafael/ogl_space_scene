@@ -110,7 +110,7 @@ fn main() {
         .cycle();
 
     /// Initializes the event handler
-    let mut event_handler = EventHandler::new(0.15, 0.4, PI, 0., 0.);
+    let mut event_handler = EventHandler::new(0.15, 0.4, PI, 0., 0., [0.0, 0.0, 1.0], [-2.0, 1.0, 1.0], [0.0, 1.0, 0.0]);
 
     event_loop.run(move |ev, _, cf| {
         let a = angle.next().unwrap();
@@ -124,7 +124,16 @@ fn main() {
         event_handler.handle_event(ev, cf);
 
         let perspective = matrices::perspective_matrix(&mut target);
-        let EventHandler {grow, tilt, spin, translate_x, translate_y} = event_handler;
+        let EventHandler {
+            grow,
+            tilt,
+            spin,
+            translate_x,
+            translate_y,
+            direction,
+            position,
+            up
+        } = event_handler;
 
         /// Draws the earth
         earth.draw(
@@ -133,6 +142,7 @@ fn main() {
             Transform {
                 rotate_self: [0.0, spin, 0.0],
                 scale: 0.3,
+                view: [direction, position, up],
                 ..Default::default()
             },
         );
@@ -145,6 +155,7 @@ fn main() {
                 translation: [-0.8, 0.0, 0.0],
                 rotate_self: [0.0, a, 0.0],
                 rotation: [0.0, a, a.cos() * tilt],
+                view: [direction, position, up],
                 ..Default::default()
             },
         );
@@ -157,6 +168,7 @@ fn main() {
                 translation: [-0.7, 0.7, 0.0],
                 scale: grow,
                 rotate_self: [0.0, -a, -0.4],
+                view: [direction, position, up],
                 ..Default::default()
             },
         );
@@ -169,6 +181,7 @@ fn main() {
                 translation: [0.5 + translate_x, 0.5 + translate_y, 0.5],
                 rotate_self: [0.0, a, 0.2],
                 scale: 0.25,
+                view: [direction, position, up],
                 ..Default::default()
             },
         );

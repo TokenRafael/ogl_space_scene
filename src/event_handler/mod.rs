@@ -9,11 +9,14 @@ pub struct EventHandler {
     pub spin: f32,
     pub translate_x: f32,
     pub translate_y: f32,
+    pub direction: [f32; 3],
+    pub position: [f32; 3],
+    pub up: [f32; 3],
 }
 
 impl EventHandler {
-    pub fn new(grow: f32, tilt: f32, spin: f32, translate_x: f32, translate_y: f32) -> Self {
-        EventHandler {grow, tilt, spin, translate_x, translate_y}
+    pub fn new(grow: f32, tilt: f32, spin: f32, translate_x: f32, translate_y: f32, direction: [f32; 3], position: [f32; 3], up: [f32; 3]) -> Self {
+        EventHandler {grow, tilt, spin, translate_x, translate_y, direction, position, up}
     }
 
     /// Method that handles the keyboard input
@@ -25,6 +28,9 @@ impl EventHandler {
             ref mut spin,
             ref mut translate_x,
             ref mut translate_y,
+            ref mut direction,
+            ref mut position,
+            ref mut up,
         } = self;
 
         match ev {
@@ -55,6 +61,12 @@ impl EventHandler {
                             VirtualKeyCode::Left => *translate_x -= STEP,
                             VirtualKeyCode::Up => *translate_y += STEP,
                             VirtualKeyCode::Down => *translate_y -= STEP,
+                            VirtualKeyCode::Numpad8 => (*position)[1] -= STEP,
+                            VirtualKeyCode::Numpad2 => (*position)[1] += STEP,
+                            VirtualKeyCode::Numpad4 => (*position)[0] += STEP,
+                            VirtualKeyCode::Numpad6 => (*position)[0] -= STEP,
+                            VirtualKeyCode::Numpad5 => (*position)[2] += STEP,
+                            VirtualKeyCode::NumpadSubtract => (*position)[2] -= STEP,
                             _ => (),
                         }
                     }
