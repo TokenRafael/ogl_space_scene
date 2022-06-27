@@ -52,6 +52,7 @@ impl DynDrawble for Triangle {
             rotation: transform.get_rotation(),
             scale: transform.get_scaling(),
             self_rotation: transform.get_self_rotation(),
+            view: transform.get_view(),
         };
 
         target.draw(

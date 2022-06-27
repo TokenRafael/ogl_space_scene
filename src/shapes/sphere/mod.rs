@@ -122,6 +122,7 @@ impl DynDrawble for Sphere {
                 scale: transform.get_scaling(),
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
+                view: transform.get_view(),
             };
         match &self.filling {
             Filling::Color(color) => {

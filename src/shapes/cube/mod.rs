@@ -128,6 +128,7 @@ impl DynDrawble for Cube {
             rotation: transform.get_rotation(),
             scale: transform.get_scaling(),
             self_rotation: transform.get_self_rotation(),
+            view: transform.get_view()
         };
 
         // Draw cube itself

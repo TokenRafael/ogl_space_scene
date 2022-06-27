@@ -48,6 +48,7 @@ impl DynDrawble for RingPlanet {
                 rotation: transform.get_rotation(),
                 self_rotation: transform.get_self_rotation(),
                 color: [1.0f32, 1.0, 1.0],
+                view: transform.get_view(),
             };
         self.planet.draw(target, params, transform);
         target.draw(

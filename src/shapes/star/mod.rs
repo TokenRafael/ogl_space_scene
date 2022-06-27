@@ -58,6 +58,7 @@ impl DynDrawble for Star {
             rotation: transform.get_rotation(),
             scale: transform.get_scaling(),
             self_rotation: transform.get_self_rotation(),
+            view: transform.get_view()
         };
 
         let rotate_self = transform.rotate_self;
