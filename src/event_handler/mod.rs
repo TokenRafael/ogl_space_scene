@@ -67,6 +67,12 @@ impl EventHandler {
                             VirtualKeyCode::Numpad6 => (*position)[0] -= STEP,
                             VirtualKeyCode::Numpad5 => (*position)[2] += STEP,
                             VirtualKeyCode::NumpadSubtract => (*position)[2] -= STEP,
+                            VirtualKeyCode::F1 => (*direction)[0] -= STEP,
+                            VirtualKeyCode::F2 => (*direction)[0] += STEP,
+                            VirtualKeyCode::F3 => (*direction)[1] -= STEP,
+                            VirtualKeyCode::F4 => (*direction)[1] += STEP,
+                            VirtualKeyCode::F5 => (*direction)[2] += STEP,
+                            VirtualKeyCode::F6 => (*direction)[2] -= STEP,
                             _ => (),
                         }
                     }
